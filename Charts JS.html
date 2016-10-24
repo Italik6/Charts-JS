@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Charts</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <style>
+        #content {
+            text-align: center;
+            border: 2px red dashed;
+            margin: 0 auto;
+            width: 750px;
+            position: relative;
+        }
+        
+        .chart {
+            display: inline-block;
+            padding: 60px;
+            overflow: hidden;
+        }
+        
+        .main-text {
+            font-size: 26px
+        }
+        
+        .progress-pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background-color: #E5E5E5;
+            position: relative;
+            box-shadow: 10px 10px 10px #bab1ba;
+        }
+        
+        .progress-pie-chart.gt-50 {
+            background-color: #f26c27;
+        }
+        
+        .ppc-progress {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            left: calc(50% - 100px);
+            top: calc(50% - 100px);
+            width: 200px;
+            height: 200px;
+            clip: rect(0, 200px, 200px, 100px);
+        }
+        
+        .ppc-progress .ppc-progress-fill {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            left: calc(50% - 100px);
+            top: calc(50% - 100px);
+            width: 200px;
+            height: 200px;
+            clip: rect(0, 100px, 200px, 0);
+            background: #f26c27;
+            transform: rotate(60deg);
+        }
+        
+        .gt-50 .ppc-progress {
+            clip: rect(0, 100px, 200px, 0);
+        }
+        
+        .gt-50 .ppc-progress .ppc-progress-fill {
+            clip: rect(0, 200px, 200px, 100px);
+            background: #E5E5E5;
+        }
+        
+        .ppc-percents {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            left: calc(50% - 160px/2);
+            top: calc(50% - 160px/2);
+            width: 160px;
+            height: 160px;
+            background: #fff;
+            text-align: center;
+            display: table;
+        }
+        
+        .ppc-percents span {
+            display: block;
+            font-size: 2.7em;
+            font-weight: bold;
+            color: #f26c27;
+        }
+        
+        .pcc-percents-wrapper {
+            display: table-cell;
+            vertical-align: middle;
+            position: absolute;
+            z-index: 80;
+            top: 50px;
+            left: 36px;
+        }
+        
+        body {
+            font-family: Arial;
+            background: #fff;
+        }
+        
+        .progress-pie-chart {
+            margin: 20px auto 0;
+        }
+        
+        #square1 {
+            width: 15px;
+            height: 15px;
+            background: #f26c27;
+            display: block;
+            margin-top: 3px;
+            margin-right: -30px;
+            float: left;
+            margin-left: 35px;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding-top: 25px;
+        }
+        
+        .legend-content ul li {
+            list-style: none;
+            display: block;
+        }
+        
+        .legend-content {
+            margin-left: -20px;
+            margin-top: 20px;
+        }
+        /*Chart 2    */
+        
+        .square-box {
+            position: relative;
+            width: 180px;
+            background: #E5E5E5;
+            display: inline-block;
+            border-radius: 8px;
+            border: 2px solid #acacac;
+            overflow: hidden;
+            margin-left: 90px;
+            margin-bottom: 15px;
+            margin-right: 50px;
+            box-shadow: 10px 10px 10px #bab1ba;
+        }
+        
+        .square-box:before {
+            content: "";
+            display: inline-block;
+            padding-top: 100%;
+        }
+        
+        #arrow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            color: #eb3d3d;
+            top: 30px
+        }
+        
+        .square-content {
+            position: absolute;
+            top: 70px;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+        
+        .square-content div {
+            display: table;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .square-content span {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 52px;
+            font-weight: bold;
+        }
+        /*
+Draw a chart    
+*/
+        
+        .myButton {
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #bab1ba));
+            background: -moz-linear-gradient(top, #ededed 5%, #bab1ba 100%);
+            background: -webkit-linear-gradient(top, #ededed 5%, #bab1ba 100%);
+            background: -o-linear-gradient(top, #ededed 5%, #bab1ba 100%);
+            background: -ms-linear-gradient(top, #ededed 5%, #bab1ba 100%);
+            background: linear-gradient(to bottom, #ededed 5%, #bab1ba 100%);
+            filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#bab1ba', GradientType=0);
+            background-color: #ededed;
+            -moz-border-radius: 7px;
+            -webkit-border-radius: 7px;
+            border-radius: 7px;
+            border: 1px solid #d6bcd6;
+            display: inline-block;
+            cursor: pointer;
+            color: #3a8a9e;
+            font-family: Verdana;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 27px;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        
+        .myButton:hover {
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bab1ba), color-stop(1, #ededed));
+            background: -moz-linear-gradient(top, #bab1ba 5%, #ededed 100%);
+            background: -webkit-linear-gradient(top, #bab1ba 5%, #ededed 100%);
+            background: -o-linear-gradient(top, #bab1ba 5%, #ededed 100%);
+            background: -ms-linear-gradient(top, #bab1ba 5%, #ededed 100%);
+            background: linear-gradient(to bottom, #bab1ba 5%, #ededed 100%);
+            filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#bab1ba', endColorstr='#ededed', GradientType=0);
+            background-color: #bab1ba;
+        }
+        
+        .myButton:active {
+            position: relative;
+            top: 1px;
+        }
+        
+        #calculate {
+            text-align: center;
+        }
+        
+        input[type="text"] {
+            display: block;
+            margin: 0 auto;
+            width: 185px;
+            font-family: sans-serif;
+            font-size: 18px;
+            appearance: none;
+            box-shadow: none;
+            border-radius: none;
+        }
+        
+        .legend-content2 li {
+            list-style: none;
+            display: inline;
+        }
+        
+        .nr-text {
+            font-size: 20px !important;
+            color: gray !important;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .circle-shadow {
+            position: absolute;
+            top: 81px;
+            left: 111px;
+            height: 315px;
+            z-index: 20;
+        }
+        
+        .rectangle-shadow {
+            position: absolute;
+            top: 70px;
+            left: -163px;
+            height: 360px;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="content">
+        <div class="chart">
+            <div class="progress-pie-chart">
+                <div class="ppc-progress">
+                    <div class="ppc-progress-fill"></div>
+                </div>
+                <div class="ppc-percents">
+                    <div class="pcc-percents-wrapper"> <span>%</span> </div>
+                </div>
+            </div>
+            <div class='legend-content'>
+                <ul>
+                    <li id='square1'></li>
+                    <li>share</li>
+                </ul>
+            </div>
+        </div>
+        <div style='display:inline-block; overflow:hidden;'>
+            <div class='square-box'>
+                <div id='arrow'></div>
+                <div class='square-content'>
+                    <div><span></span></div>
+                </div>
+            </div>
+            <p style='margin-bottom:76px; margin-left:35px; overflow:hidden; position:relative; margin-top:33px'>index</p>
+        </div> <img class="circle-shadow" src='img/circle-shadow.png' />
+    </div>
+    <div id='calculate'>
+        <ul class="input-list style-1 clearfix legend-content2">
+            <li>
+                <input type="text" placeholder="Chart 1" id='1chart' />
+            </li>
+            <li>
+                <input type="text" placeholder="Chart 2" id='2chart' />
+            </li>
+            <li>
+                <input type='button' value='Make it!' class="myButton" />
+            </li>
+        </ul>
+    </div>
+    <script>
+        $(".myButton").click(function () {
+            var $ppc = $('.progress-pie-chart'),
+                percent = ($('#1chart').val()),
+                deg = 360 * percent / 100;
+            if ($.isNumeric(percent) == false) {
+                alert('Give the correct value for chart 1');
+                return false;
+            }
+            if ((percent < 0) || (percent > 100)) {
+                alert('Give a value between 0 - 100 for chart 1');
+                return false;
+            }
+            if (percent > 50) {
+                $ppc.addClass('gt-50');
+            }
+            $('.ppc-progress-fill').css('transform', 'rotate(' + deg + 'deg)');
+            $('.ppc-percents span').html(percent + '%');
+            $('.ppc-percents p').html('with tel<br/> number');
+        });
+        $(".myButton").click(function () {
+            var percent = ($('#2chart').val());
+            if ($.isNumeric(percent) == false) {
+                alert('Give the correct value for chart 2')
+                return false;
+            }
+            if ((percent < 0)) {
+                alert('Give the not minus value for chart 2');
+                return false;
+            }
+            if (percent <= 100) {
+                $("#arrow img:last-child").remove();
+                $('.square-content span').html(percent + '%');
+                $('.square-content span').css({
+                    "color": "#eb3d3d"
+                });
+                $('#arrow').not(':has(#theImg)').prepend('<img id="theImg" src="img/red-arrow.png" />')
+            } else {
+                $("#arrow img:last-child").remove();
+                $('.square-content span').html(percent + '%');
+                $('.square-content span').css({
+                    "color": "#42d536"
+                });
+                $('#arrow').not(':has(#theImg2)').prepend('<img id="theImg2" src="img/green-arrow.png" />')
+            }
+        });
+    </script>
+</body>
+
+</html>
